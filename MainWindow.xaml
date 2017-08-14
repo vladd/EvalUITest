@@ -2,6 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EvalUITest"
         mc:Ignorable="d"
@@ -38,12 +39,15 @@
         <Label Target="{Binding ElementName=CCBox}" Content="Command:" Grid.Row="1" Grid.Column="0"/>
         <DockPanel Grid.Row="1" Grid.Column="2" IsEnabled="{Binding IsInteractive}">
             <Button Command="{Binding Evaluate}" Content="Run!" DockPanel.Dock="Right" Width="75"/>
-            <TextBox Text="{Binding CurrentInput, UpdateSourceTrigger=PropertyChanged}" Name="CCBox" VerticalContentAlignment="Center">
+            <TextBox Name="CCBox" VerticalContentAlignment="Center">
                 <TextBox.InputBindings>
                     <KeyBinding Command="{Binding Evaluate}" Key="Return"/>
                     <KeyBinding Command="{Binding GoUp}" Key="Up"/>
                     <KeyBinding Command="{Binding GoDown}" Key="Down"/>
                 </TextBox.InputBindings>
+                <i:Interaction.Behaviors>
+                    <local:CaretEndBehavior Text="{Binding CurrentInput, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+                </i:Interaction.Behaviors>
             </TextBox>
         </DockPanel>
         <Label Target="{Binding ElementName=ResultBox}" Content="{Binding LastCommand.IsSuccessful, Converter={StaticResource ResultHeaderConverter}}" Grid.Row="2" Grid.Column="0"/>
