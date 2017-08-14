@@ -5,8 +5,48 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EvalUITest"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
+        Title="Script Shell" Height="350" Width="525"
+        d:DataContext="{d:DesignInstance local:MainVM, IsDesignTimeCreatable=False}">
     <Grid>
-        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="10"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.Resources>
+            <local:BooleanToStringConverter x:Key="ResultHeaderConverter" OnTrue="Result:" OnFalse="Error:"/>
+        </Grid.Resources>
+        <ListView ItemsSource="{Binding AllCommands}" SelectedItem="{Binding CurrentCommand}" Grid.Row="0" Grid.ColumnSpan="3">
+            <ListView.ItemTemplate>
+                <DataTemplate DataType="{x:Type local:CommandVM}">
+                    <Border BorderBrush="LightGreen" Name="border" BorderThickness="2,0,0,0" Padding="4,2">
+                        <TextBlock Text="{Binding Text}"/>
+                    </Border>
+                    <DataTemplate.Triggers>
+                        <DataTrigger Binding="{Binding IsSuccessful}" Value="False">
+                            <Setter TargetName="border" Property="BorderBrush" Value="Red"/>
+                        </DataTrigger>
+                    </DataTemplate.Triggers>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+        <Label Target="{Binding ElementName=CCBox}" Content="Command:" Grid.Row="1" Grid.Column="0"/>
+        <DockPanel Grid.Row="1" Grid.Column="2" IsEnabled="{Binding IsInteractive}">
+            <Button Command="{Binding Evaluate}" Content="Run!" DockPanel.Dock="Right" Width="75"/>
+            <TextBox Text="{Binding CurrentInput, UpdateSourceTrigger=PropertyChanged}" Name="CCBox" VerticalContentAlignment="Center">
+                <TextBox.InputBindings>
+                    <KeyBinding Command="{Binding Evaluate}" Key="Return"/>
+                    <KeyBinding Command="{Binding GoUp}" Key="Up"/>
+                    <KeyBinding Command="{Binding GoDown}" Key="Down"/>
+                </TextBox.InputBindings>
+            </TextBox>
+        </DockPanel>
+        <Label Target="{Binding ElementName=ResultBox}" Content="{Binding LastCommand.IsSuccessful, Converter={StaticResource ResultHeaderConverter}}" Grid.Row="2" Grid.Column="0"/>
+        <TextBox Text="{Binding LastCommand.Result, Mode=OneWay}" IsEnabled="False" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="2" Name="ResultBox"/>
     </Grid>
 </Window>
