@@ -48,5 +48,6 @@
         </DockPanel>
         <Label Target="{Binding ElementName=ResultBox}" Content="{Binding LastCommand.IsSuccessful, Converter={StaticResource ResultHeaderConverter}}" Grid.Row="2" Grid.Column="0"/>
         <TextBox Text="{Binding LastCommand.Result, Mode=OneWay}" IsEnabled="False" VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="2" Name="ResultBox"/>
+        <Label Content="strut" Grid.Row="2" Grid.Column="1" Visibility="Hidden"/>
     </Grid>
 </Window>
