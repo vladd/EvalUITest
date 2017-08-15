@@ -32,9 +32,12 @@ namespace EvalUITest
                 new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.BindsTwoWayByDefault,
                                               (o, args) => ((CaretEndBehavior)o).OnVmTextChanged()));
 
+        bool isInControlInitiatedChange = false;
         void OnVmTextChanged()
         {
             var text = Text;
+            if (isInControlInitiatedChange)
+                return;
             if (AssociatedObject != null) // blendability
             {
                 AssociatedObject.Text = text;
@@ -44,7 +47,15 @@ namespace EvalUITest
 
         void OnControlTextChanged(object sender, TextChangedEventArgs e)
         {
-            SetCurrentValue(TextProperty, AssociatedObject.Text);
+            try
+            {
+                isInControlInitiatedChange = true;
+                SetCurrentValue(TextProperty, AssociatedObject.Text);
+            }
+            finally
+            {
+                isInControlInitiatedChange = false;
+            }
         }
     }
 }
